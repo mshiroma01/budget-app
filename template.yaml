@@ -26,7 +26,7 @@ Resources:
   CSVConverterLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: csv_converter/
+      CodeUri: lambda/csv_converter/
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Layers:
@@ -58,7 +58,7 @@ Resources:
   MutationTransactionLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: resolvers/transaction_mutation/
+      CodeUri: lambda/resolvers/transaction_mutation/
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Policies:
@@ -70,7 +70,7 @@ Resources:
   QueryTransactionLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: resolvers/transaction_query/
+      CodeUri: lambda/resolvers/transaction_query/
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Policies:
