@@ -40,7 +40,7 @@ def update_dynamodb_from_csv(df, mapping_config, file_name):
             item['balance'] = Decimal(balance_value).quantize(Decimal('0.01'))
 
         item_string = ''.join(str(item.get(field, '')) for field in sorted(item.keys()))
-        item['hash'] = hashlib.sha256(item_string.encode()).hexdigest()[:16]
+        item['hash'] = hashlib.sha256(item_string.encode()).hexdigest()
         
         response = table.put_item(Item=item)
         print(response)

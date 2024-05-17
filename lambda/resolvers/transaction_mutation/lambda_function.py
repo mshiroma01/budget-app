@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     for key in input_data:
         item[key] = input_data[key]
     item_string = ''.join(str(item.get(field, '')) for field in sorted(item.keys()))
-    item['hash'] = hashlib.sha256(item_string.encode()).hexdigest()[:16]
+    item['hash'] = hashlib.sha256(item_string.encode()).hexdigest()
     
     # Add the item to DynamoDB
     dynamodb = boto3.resource('dynamodb')
