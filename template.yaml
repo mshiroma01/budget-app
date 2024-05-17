@@ -5,15 +5,13 @@ Description: >
 
   Sample SAM Template for budget-app
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 600
     MemorySize: 128
-
-    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
     LoggingConfig:
       LogFormat: JSON
+
 Resources:
   Bucket:
     Type: AWS::S3::Bucket
@@ -28,9 +26,9 @@ Resources:
       Runtime: python3.11
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: TransactionTable
+            TableName: !Ref TransactionTable
         - DynamoDBCrudPolicy:
-            TableName: ChecksumsTable
+            TableName: !Ref ChecksumsTable
       Events:
         MyS3Event:
           Type: S3
@@ -89,3 +87,52 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+
+  GraphQLApi:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      Name: BudgetAppGraphQLApi
+      AuthenticationType: API_KEY
+
+  GraphQLSchema:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      DefinitionS3Location: s3://budget-app-schema/graphql/schema.graphql
+
+  AppSyncServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: appsync.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AppSyncServicePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: '*'
+
+Outputs:
+  CSVConverterFunction:
+    Description: "CSV Converter Lambda Function ARN"
+    Value: !GetAtt CSVConverterFunction.Arn
+  Bucket:
+    Description: "S3 Bucket"
+    Value: !Ref Bucket
+  TransactionTable:
+    Description: "Transaction DynamoDB Table"
+    Value: !Ref TransactionTable
+  ChecksumsTable:
+    Description: "Checksums DynamoDB Table"
+    Value: !Ref ChecksumsTable
+  GraphQLApiEndpoint:
+    Description: "GraphQL API Endpoint"
+    Value: !GetAtt GraphQLApi.GraphQLUrl

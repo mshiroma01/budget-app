@@ -1,0 +1,54 @@
+type transaction {
+	transaction_date: String
+	description: String
+	address: String
+	amount: Float
+	balance: Float
+	category: String
+	mapping_config_name: String
+	memo: String
+	post_date: String
+	transaction_type: String
+}
+
+input transactionInputs {
+	transaction_date: String!
+	description: String
+	address: String
+	amount: String
+	balance: String
+	category: String
+	mapping_config_name: String
+	memo: String
+	post_date: String
+	transaction_type: String
+}
+
+input transactionMutationInput {
+	userid: Int!
+	transaction_date: String
+	description: String
+	address: String
+	amount: Float
+	balance: Float
+	category: String
+	mapping_config_name: String
+	memo: String
+	post_date: String
+	transaction_type: String
+}
+
+type Mutation {
+	# Modify a single transaction
+	transactionMutation(input: transactionMutationInput): transaction
+}
+
+type Query {
+	# Get a single value of type 'Post' by primary key.
+	transactionsQuery(input: transactionInputs): [transaction]
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+}
