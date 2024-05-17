@@ -42,7 +42,7 @@ Resources:
               - s3:GetObject
               - s3:PutObject
               - s3:DeleteObject
-            Resource: arn:aws:s3:::budget-app-project/input_csv/*
+            Resource: arn:aws:s3:::budget-app-project/*
       Events:
         MyS3Event:
           Type: S3
@@ -153,7 +153,7 @@ Resources:
       Name: QueryTransactionDataSource
       Type: AWS_LAMBDA
       LambdaConfig:
-        LambdaFunctionArn: !GetAtt QueryTransactionFunction.Arn
+        LambdaFunctionArn: !GetAtt QueryTransactionLambda.Arn
       ServiceRoleArn: !GetAtt AppSyncServiceRole.Arn
 
   MutationTransactionDataSource:
@@ -163,7 +163,7 @@ Resources:
       Name: MutationTransactionDataSource
       Type: AWS_LAMBDA
       LambdaConfig:
-        LambdaFunctionArn: !GetAtt MutationTransactionFunction.Arn
+        LambdaFunctionArn: !GetAtt MutationTransactionLambda.Arn
       ServiceRoleArn: !GetAtt AppSyncServiceRole.Arn
 
   QueryTransactionResolver:
@@ -185,9 +185,9 @@ Resources:
     DependsOn: GraphQLSchema
 
 Outputs:
-  CSVConverterFunction:
+  CSVConverterLambda:
     Description: "CSV Converter Lambda Function ARN"
-    Value: !GetAtt CSVConverterFunction.Arn
+    Value: !GetAtt CSVConverterLambda.Arn
   Bucket:
     Description: "S3 Bucket"
     Value: !Ref Bucket
