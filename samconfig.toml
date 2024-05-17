@@ -20,6 +20,7 @@ resolve_s3 = true
 s3_prefix = "budget-app"
 region = "us-east-1"
 image_repositories = []
+parameter_overrides = "ApiKeyExpiryDate=\"1747459628\""
 
 [default.package.parameters]
 resolve_s3 = true
