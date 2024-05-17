@@ -23,7 +23,7 @@ Resources:
     Properties:
       BucketName: budget-app-project
 
-  CSVConverterFunction:
+  CSVConverterLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: csv_converter/
@@ -55,10 +55,10 @@ Resources:
                   - Name: prefix
                     Value: input_csv/
 
-  MutationTransactionFunction:
+  MutationTransactionLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: resolvers/transactionmutation/
+      CodeUri: resolvers/transaction_mutation/
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Policies:
@@ -67,10 +67,10 @@ Resources:
       Architectures:
         - x86_64
   
-  QueryTransactionFunction:
+  QueryTransactionLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: resolvers/transactionquery/
+      CodeUri: resolvers/transaction_query/
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Policies:
