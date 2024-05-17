@@ -1,14 +1,14 @@
 import boto3
 
-def get_transactions_from_dynamodb():
-    # Define the DynamoDB table name
-    table_name = 'transactions_table'
+# Define the DynamoDB table name as a constant
+TABLE_NAME = 'TransactionTable'
 
+def get_transactions_from_dynamodb():
     # Create a DynamoDB resource
     dynamodb = boto3.resource('dynamodb')
 
-    # Get the DynamoDB table
-    table = dynamodb.Table(table_name)
+    # Get the DynamoDB table using the constant table name
+    table = dynamodb.Table(TABLE_NAME)
 
     # Perform a scan operation to retrieve all items in the table
     response = table.scan()

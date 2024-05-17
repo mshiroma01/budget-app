@@ -3,7 +3,7 @@ import boto3
 from decimal import Decimal
 import hashlib
 
-TABLE_NAME = 'MyTransactionTable'
+TABLE_NAME = 'TransactionTable'
 
 def update_dynamodb_from_csv(df, mapping_config, file_name):
     dynamodb = boto3.resource('dynamodb')

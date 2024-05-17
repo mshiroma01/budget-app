@@ -2,6 +2,8 @@ import boto3
 from decimal import Decimal
 import hashlib
 
+DYNAMODB_TABLE_NAME = 'TransactionTable'
+
 def lambda_handler(event, context):
     # Extract input data from the GraphQL event
     input_data = event.get('arguments', {}).get('input', {})
@@ -20,7 +22,7 @@ def lambda_handler(event, context):
     
     # Add the item to DynamoDB
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('transactions_table')
+    table = dynamodb.Table(DYNAMODB_TABLE_NAME)
     response = table.put_item(Item=item)
     
     # Return the response

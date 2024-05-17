@@ -7,7 +7,7 @@ from utils import rename_file, get_csv_file_from_s3
 from mapping_configurations import mapping_configs
 
 # DynamoDB table name
-CHECKSUMS_TABLE_NAME = 'MyChecksumsTable'
+CHECKSUMS_TABLE_NAME = 'ChecksumsTable'
 
 def calculate_checksum(data):
     # Calculate MD5 checksum
