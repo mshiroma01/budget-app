@@ -38,6 +38,30 @@ Resources:
             Bucket: !Ref Bucket
             Events: s3:ObjectCreated:*
 
+  MutationTransactionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: resolvers/transactionmutation/
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.11
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref TransactionTable
+      Architectures:
+        - x86_64
+  
+  QueryTransactionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: resolvers/transactionquery/
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.11
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TransactionTable
+      Architectures:
+        - x86_64
+
   TransactionTable:
     Type: AWS::DynamoDB::Table
     Properties:
