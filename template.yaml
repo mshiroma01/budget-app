@@ -5,6 +5,11 @@ Description: >
 
   Sample SAM Template for budget-app
 
+Parameters:
+  ApiKeyExpiryDate:
+    Type: String
+    Description: "The expiration date of the API key in Unix timestamp format"
+
 Globals:
   Function:
     Timeout: 600
@@ -24,11 +29,20 @@ Resources:
       CodeUri: csv_converter/
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
+      Layers:
+        - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:1  # Replace with the actual ARN for your region
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TransactionTable
         - DynamoDBCrudPolicy:
             TableName: !Ref ChecksumsTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:DeleteObject
+            Resource: arn:aws:s3:::budget-app-project/input_csv/*
       Events:
         MyS3Event:
           Type: S3
@@ -98,6 +112,13 @@ Resources:
     Properties:
       Name: BudgetAppGraphQLApi
       AuthenticationType: API_KEY
+
+  GraphQLApiKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      Description: "API Key for Budget App GraphQL API"
+      Expires: !Ref ApiKeyExpiryDate
 
   GraphQLSchema:
     Type: AWS::AppSync::GraphQLSchema
@@ -179,3 +200,6 @@ Outputs:
   GraphQLApiEndpoint:
     Description: "GraphQL API Endpoint"
     Value: !GetAtt GraphQLApi.GraphQLUrl
+  GraphQLApiKey:
+    Description: "GraphQL API Key"
+    Value: !Ref GraphQLApiKey
