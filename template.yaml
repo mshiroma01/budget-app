@@ -120,6 +120,26 @@ Resources:
                   - lambda:InvokeFunction
                 Resource: '*'
 
+  QueryTransactionDataSource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      Name: QueryTransactionDataSource
+      Type: AWS_LAMBDA
+      LambdaConfig:
+        LambdaFunctionArn: !GetAtt QueryTransactionFunction.Arn
+      ServiceRoleArn: !GetAtt AppSyncServiceRole.Arn
+
+  MutationTransactionDataSource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      Name: MutationTransactionDataSource
+      Type: AWS_LAMBDA
+      LambdaConfig:
+        LambdaFunctionArn: !GetAtt MutationTransactionFunction.Arn
+      ServiceRoleArn: !GetAtt AppSyncServiceRole.Arn
+
 Outputs:
   CSVConverterFunction:
     Description: "CSV Converter Lambda Function ARN"
