@@ -37,3 +37,31 @@ Resources:
           Properties:
             Bucket: !Ref Bucket
             Events: s3:ObjectCreated:*
+
+  TransactionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TransactionTable
+      AttributeDefinitions:
+        - AttributeName: hash
+          AttributeType: S
+      KeySchema:
+        - AttributeName: hash
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  ChecksumsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ChecksumsTable
+      AttributeDefinitions:
+        - AttributeName: checksum
+          AttributeType: S
+      KeySchema:
+        - AttributeName: checksum
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
