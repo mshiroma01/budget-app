@@ -35,6 +35,11 @@ Resources:
           Properties:
             Bucket: !Ref Bucket
             Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: input_csv/
 
   MutationTransactionFunction:
     Type: AWS::Serverless::Function
@@ -139,6 +144,24 @@ Resources:
       LambdaConfig:
         LambdaFunctionArn: !GetAtt MutationTransactionFunction.Arn
       ServiceRoleArn: !GetAtt AppSyncServiceRole.Arn
+
+  QueryTransactionResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      TypeName: "Query"
+      FieldName: "transactionsQuery"
+      DataSourceName: !GetAtt QueryTransactionDataSource.Name
+    DependsOn: GraphQLSchema
+
+  MutationTransactionResolver:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: !GetAtt GraphQLApi.ApiId
+      TypeName: "Mutation"
+      FieldName: "transactionMutation"
+      DataSourceName: !GetAtt MutationTransactionDataSource.Name
+    DependsOn: GraphQLSchema
 
 Outputs:
   CSVConverterFunction:
