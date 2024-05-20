@@ -14,8 +14,8 @@ def lambda_handler(event, context):
     filtered_transactions = [
         {
             **transaction,
-            'transaction_date': str(transaction['transaction_date']),
-            'post_date': str(transaction['post_date'])
+            'transaction_date': transaction['transaction_date'].strftime('%m/%d/%Y'),
+            'post_date': transaction['post_date'].strftime('%m/%d/%Y')
         }
         for transaction in filtered_transactions
     ]
