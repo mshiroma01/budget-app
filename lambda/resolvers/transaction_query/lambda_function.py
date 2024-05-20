@@ -10,5 +10,13 @@ def lambda_handler(event, context):
     
     # Apply filters
     filtered_transactions = apply_filters(transactions, input_data)
-
+    # Convert transaction_date and post_date to string
+    filtered_transactions = [
+        {
+            **transaction,
+            'transaction_date': str(transaction['transaction_date']),
+            'post_date': str(transaction['post_date'])
+        }
+        for transaction in filtered_transactions
+    ]
     return filtered_transactions

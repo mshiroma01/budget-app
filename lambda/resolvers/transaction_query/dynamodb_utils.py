@@ -1,4 +1,5 @@
 import boto3
+from datetime import datetime
 
 # Define the DynamoDB table name as a constant
 TABLE_NAME = 'TransactionTable'
@@ -20,7 +21,8 @@ def get_transactions_from_dynamodb():
     transactions = []
     for item in items:
         transaction = {
-            'transaction_date': item.get('transaction_date', ''),
+            'hash': item.get('hash'),   # the hash is the primary key, always have a value
+            'transaction_date': datetime.strptime(item.get('transaction_date', ''), '%m/%d/%Y').date(),
             'description': item.get('description', ''),
             'address': item.get('address', ''),
             'amount': float(item.get('amount', 0)),
@@ -28,7 +30,7 @@ def get_transactions_from_dynamodb():
             'category': item.get('category', ''),
             'mapping_config_name': item.get('mapping_config_name', ''),
             'memo': item.get('memo', ''),
-            'post_date': item.get('post_date', ''),
+            'post_date': datetime.strptime(item.get('post_date', ''), '%m/%d/%Y').date(),
             'transaction_type': item.get('transaction_type', '')
         }
         transactions.append(transaction)
