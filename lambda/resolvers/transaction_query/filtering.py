@@ -1,3 +1,4 @@
+import datetime
 import re
 from parse_input import parse_input
 
@@ -39,12 +40,11 @@ def infix_to_postfix(tokens):
 def evaluate_conditions(transaction, input_data):
     for field, condition in input_data.items():
         postfix_tokens = infix_to_postfix(tokenize(condition))
-        print(postfix_tokens)
-        if not evaluate_postfix(transaction.get(field), postfix_tokens):
+        if not evaluate_postfix(transaction.get(field), postfix_tokens, field):
             return False
     return True
 
-def evaluate_postfix(field_value, postfix_tokens):
+def evaluate_postfix(field_value, postfix_tokens, field):
     operand_stack = []
     for token in postfix_tokens:
         if token == '&&':
@@ -66,6 +66,15 @@ def evaluate_postfix(field_value, postfix_tokens):
             parsed_input = parse_input(token)
             operator = parsed_input['operator']
             value = parsed_input['value']
+            
+            # Need to change the value to the correct type
+            if field in ['amount', 'balance']:
+                value = float(value)
+            elif field in ['transaction_date', 'post_date']:
+                try:
+                    value = datetime.datetime.strptime(value, '%m/%d/%Y').date()
+                except ValueError:
+                    pass
             
             if operator == '==':
                 result = field_value == value
