@@ -22,7 +22,7 @@ def get_transactions_from_dynamodb():
     for item in items:
         transaction = {
             'hash': item.get('hash'),   # the hash is the primary key, always have a value
-            'transaction_date': datetime.strptime(item.get('transaction_date', ''), '%m/%d/%Y').date(),
+            'transaction_date': '' if not item.get('transaction_date') else datetime.strptime(item.get('transaction_date', ''), '%m/%d/%Y').date(),
             'description': item.get('description', ''),
             'address': item.get('address', ''),
             'amount': float(item.get('amount', 0)),
@@ -30,7 +30,7 @@ def get_transactions_from_dynamodb():
             'category': item.get('category', ''),
             'mapping_config_name': item.get('mapping_config_name', ''),
             'memo': item.get('memo', ''),
-            'post_date': datetime.strptime(item.get('post_date', ''), '%m/%d/%Y').date(),
+            'post_date': '' if not item.get('post_date') else datetime.strptime(item.get('post_date', ''), '%m/%d/%Y').date(),
             'transaction_type': item.get('transaction_type', '')
         }
         transactions.append(transaction)
