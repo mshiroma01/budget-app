@@ -1,14 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
+Description: |
   budget-app
-
   Sample SAM Template for budget-app
 
 Parameters:
   ApiKeyExpiryDate:
     Type: String
-    Description: "The expiration date of the API key in Unix timestamp format"
+    Description: The expiration date of the API key in Unix timestamp format
 
 Globals:
   Function:
@@ -30,7 +29,7 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Layers:
-        - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:1  # Replace with the actual ARN for your region
+        - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:1 # Replace with the actual ARN for your region
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TransactionTable
@@ -62,11 +61,14 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Policies:
-        - DynamoDBWritePolicy:
-            TableName: !Ref TransactionTable
+        - Statement:
+            Effect: Allow
+            Action: 
+              - dynamodb:PutItem
+            Resource: !GetAtt TransactionTable.Arn
       Architectures:
         - x86_64
-  
+
   QueryTransactionLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -74,8 +76,13 @@ Resources:
       Handler: lambda_function.lambda_handler
       Runtime: python3.11
       Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref TransactionTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query
+              - dynamodb:Scan
+            Resource: !GetAtt TransactionTable.Arn
       Architectures:
         - x86_64
 
@@ -117,7 +124,7 @@ Resources:
     Type: AWS::AppSync::ApiKey
     Properties:
       ApiId: !GetAtt GraphQLApi.ApiId
-      Description: "API Key for Budget App GraphQL API"
+      Description: API Key for Budget App GraphQL API
       Expires: !Ref ApiKeyExpiryDate
 
   GraphQLSchema:
@@ -170,8 +177,8 @@ Resources:
     Type: AWS::AppSync::Resolver
     Properties:
       ApiId: !GetAtt GraphQLApi.ApiId
-      TypeName: "Query"
-      FieldName: "transactionsQuery"
+      TypeName: Query
+      FieldName: transactionsQuery
       DataSourceName: !GetAtt QueryTransactionDataSource.Name
     DependsOn: GraphQLSchema
 
@@ -179,27 +186,27 @@ Resources:
     Type: AWS::AppSync::Resolver
     Properties:
       ApiId: !GetAtt GraphQLApi.ApiId
-      TypeName: "Mutation"
-      FieldName: "transactionMutation"
+      TypeName: Mutation
+      FieldName: transactionMutation
       DataSourceName: !GetAtt MutationTransactionDataSource.Name
     DependsOn: GraphQLSchema
 
 Outputs:
   CSVConverterLambda:
-    Description: "CSV Converter Lambda Function ARN"
+    Description: CSV Converter Lambda Function ARN
     Value: !GetAtt CSVConverterLambda.Arn
   Bucket:
-    Description: "S3 Bucket"
+    Description: S3 Bucket
     Value: !Ref Bucket
   TransactionTable:
-    Description: "Transaction DynamoDB Table"
+    Description: Transaction DynamoDB Table
     Value: !Ref TransactionTable
   ChecksumsTable:
-    Description: "Checksums DynamoDB Table"
+    Description: Checksums DynamoDB Table
     Value: !Ref ChecksumsTable
   GraphQLApiEndpoint:
-    Description: "GraphQL API Endpoint"
+    Description: GraphQL API Endpoint
     Value: !GetAtt GraphQLApi.GraphQLUrl
   GraphQLApiKey:
-    Description: "GraphQL API Key"
+    Description: GraphQL API Key
     Value: !Ref GraphQLApiKey
