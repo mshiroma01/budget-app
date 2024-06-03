@@ -1,0 +1,9 @@
+:root {
+    --color-bg: #ffffff;
+    --color-text: #000000;
+}
+
+body.dark {
+    --color-bg: #000000;
+    --color-text: #ffffff;
+}

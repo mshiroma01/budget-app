@@ -1,0 +1,13 @@
+{
+  "resourceName": "reactbudgetpythonS3",
+  "policyUUID": "d63527c7",
+  "bucketName": "budget-app-project",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "groupAccess": {}
+}
