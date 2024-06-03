@@ -47,7 +47,7 @@ def update_dynamodb_from_csv(df, mapping_config, file_name):
 
     print(f'Successfully updated DynamoDB table with data from CSV with mapping: {mapping_config}')
 
-def store_checksum_in_dynamodb(table_name, checksum, file_name):
+def store_checksum_in_dynamodb(table_name, checksum, file_name, mapping_config):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(table_name)
 
@@ -61,7 +61,8 @@ def store_checksum_in_dynamodb(table_name, checksum, file_name):
     table.put_item(Item={
         'checksum': checksum,
         'date_added': current_datetime,
-        'user_id': user_id
+        'user_id': user_id,
+        'mapping_config': mapping_config
     })
 
     print(f"Checksum '{checksum}' stored in DynamoDB table '{table_name}' with date '{current_datetime}'.")

@@ -52,7 +52,7 @@ def lambda_handler(event, context):
                 print(f'No matching mapping configuration found for CSV file: {key}')
 
             # Store the checksum and date in DynamoDB
-            store_checksum_in_dynamodb(CHECKSUMS_TABLE_NAME, checksum, key)
+            store_checksum_in_dynamodb(CHECKSUMS_TABLE_NAME, checksum, key, mapping_config['name'])
         else:
             print(f"File with checksum '{checksum}' has already been processed. Skipping further processing.")
             s3.delete_object(Bucket=bucket, Key=key)
