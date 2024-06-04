@@ -35,6 +35,8 @@ Resources:
             TableName: !Ref TransactionTable
         - DynamoDBCrudPolicy:
             TableName: !Ref ChecksumsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ClassificationTable
         - Statement:
             Effect: Allow
             Action:
@@ -110,6 +112,24 @@ Resources:
       KeySchema:
         - AttributeName: checksum
           KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  ClassificationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ClassificationTable
+      AttributeDefinitions:
+        - AttributeName: userid
+          AttributeType: S
+        - AttributeName: category
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userid
+          KeyType: HASH
+        - AttributeName: category
+          KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
@@ -204,6 +224,9 @@ Outputs:
   ChecksumsTable:
     Description: Checksums DynamoDB Table
     Value: !Ref ChecksumsTable
+  ClassificationTable:
+    Description: ClassificationTable DynamoDB Table
+    Value: !Ref ClassificationTable
   GraphQLApiEndpoint:
     Description: GraphQL API Endpoint
     Value: !GetAtt GraphQLApi.GraphQLUrl

@@ -1,6 +1,7 @@
 from datetime import datetime
 import boto3
 from decimal import Decimal
+from classification import classification, get_classification_data
 import hashlib
 
 TABLE_NAME = 'TransactionTable'
@@ -8,13 +9,15 @@ TABLE_NAME = 'TransactionTable'
 def update_dynamodb_from_csv(df, mapping_config, file_name):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(TABLE_NAME)
+    
+    # Userid is the last part of the file name
+    file_parts = file_name.split('/')[-1].split('_')
+    user_id = file_parts[0]
+    
+    classification_data = get_classification_data("ClassificationTable", user_id)
 
     for _, row in df.iterrows():
         item = {}
-        
-        # Userid is the last part of the file name
-        file_parts = file_name.split('/')[-1].split('_')
-        user_id = file_parts[0]
         item['userid'] = user_id
 
         for key, value in mapping_config.items():
@@ -41,6 +44,8 @@ def update_dynamodb_from_csv(df, mapping_config, file_name):
 
         item_string = ''.join(str(item.get(field, '')) for field in sorted(item.keys()))
         item['hash'] = hashlib.sha256(item_string.encode()).hexdigest()
+        
+        item = classification(item, classification_data)
         
         response = table.put_item(Item=item)
         print(response)
