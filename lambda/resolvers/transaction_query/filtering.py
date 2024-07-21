@@ -76,17 +76,41 @@ def evaluate_postfix(field_value, postfix_tokens, field):
                 except ValueError:
                     pass
             
+            # For contains and for truncation wildcard masking
+            if value.endswith('*'):
+                # For contains
+                if value.startswith('*'):
+                    if operator == '==':
+                        print("value con " + value[1:-1] + " | " + field_value)
+                        print(value[1:-1] in field_value)
+                        operand_stack.append(value[1:-1] in field_value)
+                        continue
+                    elif operator == '!=':
+                        operand_stack.append(value[:-1] not in field_value)
+                        continue
+                    else:
+                        return False    # return false if anything else doesnt make sense
+                else:   # is a wildcard masking
+                    temp_field_value = field_value[:len(value) - 1]
+                    value = value[:-1]  #remove the * at the end
+                    print("value end " + value + " | " + temp_field_value)
+            else:
+                temp_field_value = field_value
+                
             if operator == '==':
-                result = field_value == value
+                result = temp_field_value == value
             elif operator == '!=':
-                result = field_value != value
+                result = temp_field_value != value
             elif operator == '<':
-                result = field_value < value
+                result = temp_field_value < value
             elif operator == '<=':
-                result = field_value <= value
+                result = temp_field_value <= value
             elif operator == '>':
-                result = field_value > value
+                result = temp_field_value > value
             elif operator == '>=':
-                result = field_value >= value
+                result = temp_field_value >= value
+            print(result)
             operand_stack.append(result)
-    return operand_stack.pop()
+    ret = operand_stack.pop()
+    print(ret)
+    return ret
